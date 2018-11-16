@@ -36,6 +36,10 @@ WORKDIR $HOME/incubator-superset
 
 COPY ./ ./
 
+# 使用国内豆瓣的PIP源，解决安装速度慢的问题
+RUN mkdir $HOME/.pip
+COPY ./pip.conf /home/work/.pip/pip.conf
+
 RUN mkdir -p /home/work/.cache
 RUN pip install --upgrade setuptools pip
 RUN pip install -r requirements.txt
@@ -54,6 +58,8 @@ RUN chown -R work:work $HOME
 
 USER work
 
+# 设置yarn为淘宝源
+RUN yarn config set registry 'https://registry.npm.taobao.org'
 RUN cd superset/assets && yarn
 RUN cd superset/assets && npm run build
 
